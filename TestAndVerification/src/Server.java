@@ -2,12 +2,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Server {
 
@@ -16,9 +12,9 @@ public class Server {
 	  try {
     ServerSocket server = new ServerSocket(4444);
     int id = 0;
- 
+    
     while (true) {
-    	
+    	System.out.println("listening for connections..");
     	Socket clientSocket = server.accept();
       ClientThread clientThread = new ClientThread(clientSocket, id++);
       clientThread.start();
@@ -28,9 +24,6 @@ public class Server {
     	}
     }
   }
-
-
-
 
 class ClientThread extends Thread {
   Socket clientSocket;

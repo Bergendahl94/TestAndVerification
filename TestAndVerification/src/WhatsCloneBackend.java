@@ -1,7 +1,12 @@
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.*;
 import java.math.BigDecimal;
+import java.net.Socket;
 
 
 public class WhatsCloneBackend implements IKernel {
@@ -54,15 +59,63 @@ public class WhatsCloneBackend implements IKernel {
 	
 	public static void main(String [] args)
 	{
-		WhatsCloneBackend server = new WhatsCloneBackend();
+		final String host = "localhost";
+		final int portNumber = 4444;
+		System.out.println("Creating socket to '" + host + "' on port " + portNumber);
+
+		while (true) {
+			Socket socket = null;
+			try {
+				socket = new Socket(host, portNumber);
+			} catch (IOException e6) {
+				// TODO Auto-generated catch block
+				e6.printStackTrace();
+			}
+			BufferedReader br = null;
+			
+			try {
+				br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			} catch (IOException e5) {
+				// TODO Auto-generated catch block
+				e5.printStackTrace();
+			}
+			PrintWriter out = null;
+			
+			try {
+				out = new PrintWriter(socket.getOutputStream(), true);
+			} catch (IOException e4) {
+				// TODO Auto-generated catch block
+				e4.printStackTrace();
+			}
+
+			try {
+				System.out.println("server says:" + br.readLine());
+			} catch (IOException e3) {
+				// TODO Auto-generated catch block
+				e3.printStackTrace();
+			}
 		
-		server.Add("gdfflgk","gfdföglk","gsdgäölk");
-		server.Add("gdfflgk","gfdföglgdfg","gsdgäölk");
-		server.Delete(1);
-		
-		server.Fetch("gdfflgk");
-		
-		
+			String userInput = null;
+			userInput = "Add";
+			out.println(userInput);
+
+			try {
+				System.out.println("server says:" + br.readLine());
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+			if ("exit".equalsIgnoreCase(userInput)) {
+				try {
+					socket.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				break;
+			}
+		}
 
 		
 	}
@@ -72,6 +125,11 @@ public class WhatsCloneBackend implements IKernel {
 	public int Replace(String recipientID, int messageID) {
 		// TODO Auto-generated method stub
 		return MessageDB.Replace(messageID, recipientID);
+	}
+	
+	public void UserCommand () {
+		
+		
 	}
 	
 }
