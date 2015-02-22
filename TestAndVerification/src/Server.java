@@ -2,22 +2,35 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Server {
+
 	
   public static void main(String[] args) throws Exception {
+	  try {
     ServerSocket server = new ServerSocket(4444);
     int id = 0;
  
     while (true) {
-      Socket clientSocket = server.accept();
+    	
+    	Socket clientSocket = server.accept();
       ClientThread clientThread = new ClientThread(clientSocket, id++);
       clientThread.start();
+    	}
+	  }catch (Exception e) {
+    		System.out.println(e);
+    	}
     }
   }
-}
+
+
+
 
 class ClientThread extends Thread {
   Socket clientSocket;
@@ -30,8 +43,8 @@ class ClientThread extends Thread {
   }
 
   public void run() {
-    System.out.println("Accepted Client : ID - " + clientID + " : Address - "
-        + clientSocket.getInetAddress().getHostName());
+    System.out.println("Accepted Client : ID - " + clientID + " : Address - " + clientSocket.getInetAddress().getHostName());
+    
     try {
       BufferedReader   in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
       PrintWriter   out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
