@@ -67,25 +67,25 @@ public class WhatsCloneBackend implements IKernel {
 			Socket socket = null;
 			try {
 				socket = new Socket(host, portNumber);
-			} catch (IOException e6) {
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e6.printStackTrace();
+				e.printStackTrace();
 			}
 			BufferedReader br = null;
 			
 			try {
 				br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			} catch (IOException e5) {
+			} catch (IOException e1) {
 				// TODO Auto-generated catch block
-				e5.printStackTrace();
+				e1.printStackTrace();
 			}
 			PrintWriter out = null;
 			
 			try {
 				out = new PrintWriter(socket.getOutputStream(), true);
-			} catch (IOException e4) {
+			} catch (IOException e2) {
 				// TODO Auto-generated catch block
-				e4.printStackTrace();
+				e2.printStackTrace();
 			}
 
 			try {
@@ -101,17 +101,17 @@ public class WhatsCloneBackend implements IKernel {
 
 			try {
 				System.out.println("server says:" + br.readLine());
-			} catch (IOException e1) {
+			} catch (IOException e4) {
 				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				e4.printStackTrace();
 			}
 
 			if ("exit".equalsIgnoreCase(userInput)) {
 				try {
 					socket.close();
-				} catch (IOException e) {
+				} catch (IOException e5) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					e5.printStackTrace();
 				}
 				break;
 			}

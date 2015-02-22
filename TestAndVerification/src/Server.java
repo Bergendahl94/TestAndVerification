@@ -26,6 +26,7 @@ public class Server {
   }
 
 class ClientThread extends Thread {
+MessageHandler messageDB = new MessageHandler();
   Socket clientSocket;
   int clientID = -1;
   boolean running = true;
@@ -47,15 +48,19 @@ class ClientThread extends Thread {
         
         if (clientCommand.equalsIgnoreCase("add")){
         	//TODO
+        	//messageDB.Add(recipientID, senderID, message);
         }
         if (clientCommand.equalsIgnoreCase("delete")){
         	//TODO
+        	//messageDB.Delete(messageID);
         }
         if (clientCommand.equalsIgnoreCase("replace")){
         	//TODO
+        	//messageDB.Replace(messageID, message);
         }
         if (clientCommand.equalsIgnoreCase("fetch")){
         	//TODO
+        	//messageDB.Fetch(recipientID);
         }
         if (clientCommand.equalsIgnoreCase("quit")) {
           running = false;
