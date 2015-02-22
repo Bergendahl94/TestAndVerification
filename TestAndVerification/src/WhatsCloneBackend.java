@@ -1,4 +1,8 @@
+import java.io.File;
+import java.io.StringWriter;
 import java.util.*;
+import java.math.BigDecimal;
+
 
 public class WhatsCloneBackend implements IKernel {
 
@@ -20,12 +24,13 @@ public class WhatsCloneBackend implements IKernel {
 	}
 
 
-
+	@Override
 	public int Add(String recipientID, String senderID, String message) {
 		return MessageDB.Add(recipientID, senderID, message);
 	}
 
 
+	@Override
 	public int Delete(int messageID) {
 		return MessageDB.Delete(messageID);
 		
@@ -33,28 +38,40 @@ public class WhatsCloneBackend implements IKernel {
 	}
 
 
-	public int Replace(int messageID, String message) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	
 
 
+	@Override
 	public String Fetch(String recipientID) {
-		// TODO Auto-generated method stub
-		return null;
+		return MessageDB.Fetch(recipientID);
 	}
 
 
+	@Override
 	public int Fetch_Complete(String recipientID) {
-		// TODO Auto-generated method stub
-		return 0;
+		return MessageDB.fetch_complete(recipientID);
+	}
+	
+	public static void main(String [] args)
+	{
+		WhatsCloneBackend server = new WhatsCloneBackend();
+		
+		server.Add("gdfflgk","gfdföglk","gsdgäölk");
+		server.Add("gdfflgk","gfdföglgdfg","gsdgäölk");
+		server.Delete(1);
+		
+		server.Fetch("gdfflgk");
+		
+		
+
+		
 	}
 
 
-
-	public int Replace(String recipientID, String message) {
+	@Override
+	public int Replace(String recipientID, int messageID) {
 		// TODO Auto-generated method stub
-		return 0;
+		return MessageDB.Replace(messageID, recipientID);
 	}
 	
 }
