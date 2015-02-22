@@ -1,80 +1,77 @@
-import java.net.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
 
-class Server implements Runnable {
-	  private static Socket client;
-	  ServerSocket server;
-	  
-	  
-	  public static void main(String[] args) {
-		  
-		Server srv = new Server(client);
-		srv.listenSocket();
-		  
-	  }
+public class Server {
+	
+  public static void main(String[] args) throws Exception {
+    ServerSocket server = new ServerSocket(4444);
+    int id = 0;
+ 
+    while (true) {
+      Socket clientSocket = server.accept();
+      ClientThread clientThread = new ClientThread(clientSocket, id++);
+      clientThread.start();
+    }
+  }
+}
 
-	//Constructor
-	  Server(Socket client) {
-	    this.client = client;
-	  }
+class ClientThread extends Thread {
+  Socket clientSocket;
+  int clientID = -1;
+  boolean running = true;
 
-	  public void run(){
-	    String line;
-	    BufferedReader in = null;
-	    PrintWriter out = null;
-	    try{
-	      in = new BufferedReader(new 
-	        InputStreamReader(client.getInputStream()));
-	      out = new 
-	        PrintWriter(client.getOutputStream(), true);
-	    } catch (IOException e) {
-	      System.out.println("in or out failed");
-	      System.exit(-1);
-	    }
+  ClientThread(Socket s, int i) {
+    clientSocket = s;
+    clientID = i;
+  }
 
-	    while(true){
-	      try{
-	        line = in.readLine();
-	        if(line == "Add") {
-	        	//TODO
-	        }
-	        if(line == "Delete") {
-	        	//TODO
-	        }
-	        if(line == "Replace") {
-	        	//TODO
-	        }
-	        if(line == "Fetch") {
-	        	//TODO
-	        }
-	//Send data back to client
-	        out.println(line);
-	       }catch (IOException e) {
-	        System.out.println("Read failed");
-	        System.exit(-1);
-	       }
-	    }
-	  }
-	  
-	  public void listenSocket(){
-		  try{
-		    server = new ServerSocket(4444);
-		    System.out.println("Server listening on port 4444");
-		  } catch (IOException e) {
-		    System.out.println("Could not listen on port 4444");
-		    System.exit(-1);
-		  }
-		  while(true){
-		   Server w;
-		    try{
-		//server.accept returns a client connection
-		      w = new Server(server.accept());
-		      Thread t = new Thread(w);
-		      t.start();
-		    } catch (IOException e) {
-		      System.out.println("Accept failed: 4444");
-		      System.exit(-1);
-		    }
-		  }
-		}
-	}
+  public void run() {
+    System.out.println("Accepted Client : ID - " + clientID + " : Address - "
+        + clientSocket.getInetAddress().getHostName());
+    try {
+      BufferedReader   in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+      PrintWriter   out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+      while (running) {
+        String clientCommand = in.readLine();
+        System.out.println("Client Says :" + clientCommand);
+        
+        if (clientCommand.equalsIgnoreCase("add")){
+        	//TODO
+        }
+        if (clientCommand.equalsIgnoreCase("delete")){
+        	//TODO
+        }
+        if (clientCommand.equalsIgnoreCase("replace")){
+        	//TODO
+        }
+        if (clientCommand.equalsIgnoreCase("fetch")){
+        	//TODO
+        }
+        if (clientCommand.equalsIgnoreCase("quit")) {
+          running = false;
+          System.out.print("Stopping client thread for client : " + clientID);
+        } else {
+          out.println(clientCommand);
+          out.flush();
+        }
+      }
+    } catch (Exception e) {
+    	constructXmlError("Error", e);
+      e.printStackTrace();
+    }
+  }
+
+private String constructXmlError(String name, Exception e) {
+	// TODO Auto-generated method stub
+	StringBuilder sb = new StringBuilder();
+	 sb.append("<"+name+">");
+	 sb.append(e);
+	 sb.append("</"+name+">");
+	 return sb.toString();
+	
+}
+}
