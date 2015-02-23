@@ -3,8 +3,6 @@ import static org.junit.Assert.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 
@@ -74,7 +72,7 @@ public class Tests {
 
 	  Pre-condition: New non-empty string given & valid identifier given, also the message should not have been fetched.
 
-	  Post-condition: The message specificed at the identifier should have been changed and a positive integer returned.
+	  Post-condition: The message specified at the identifier should have been changed and a positive integer returned.
 	  
 	  Test-cases: replace
 
@@ -174,5 +172,12 @@ public class Tests {
 		Server.Add(recipientID, senderID, message); // Send a message
 		int fetchComplete = Server.Fetch_Complete(recipientID); //Gets the return value of fetch_complete
 		assertEquals(fetchComplete, -1); // Test passes, fetch haven't been completed
+	}
+	
+	@Test
+	public void serverTests() {
+		
+		
+		
 	}
 }	
