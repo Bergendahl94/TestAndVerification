@@ -52,11 +52,15 @@ MessageHandler messageDB = new MessageHandler();
 	  //We add the accepted client to our Arraylist of currently connected clients
 	Server.hostNames.add(clientSocket.getInetAddress().getHostName());
     System.out.println("Accepted Client : ID - " + clientID + " : Address - " + clientSocket.getInetAddress().getHostName()); 
-    
+    final int BUFFER_SIZE = 65536;
+    byte[] buffer = new byte[BUFFER_SIZE];
+   
     try {
     	//We start an input and output reader/writers through the sockets
+    
     	  BufferedReader   in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
           PrintWriter   out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()), true);
+         
  
         
           //While the client is connected it will loop this.
@@ -68,23 +72,25 @@ MessageHandler messageDB = new MessageHandler();
                  
                  //The client wants to exit, we use this command to close the socket on both the server and on the client simultaneously, If not done simultaneously we will receive a socket error due to that the streams are still in use.
                  if (clientCommand.equalsIgnoreCase("exit") || clientSocket.isClosed()) {
-                	 Thread.sleep(1000);
+                	// Thread.sleep(500);
                 	 //We remove the connected client from our array so he can reconnect at a later moment if he wishes too & that his unique identifier is not in use.
                 	 out.println("Client closed the connection");
                 	 out.println(clientCommand);
+                	
                 	 removeHost();
                 	 clientSocket.close();
                  } 
                  
                  //We print back same command and flushes the stream to remove lost TCP packages stuck in the stream (JUST NOW FOR TESTING PURPOSES!)
                  out.println(clientCommand);
-                 out.flush();
+                 
+     
                  
                             
              }        
             }
 
-    } catch (IOException | InterruptedException e) {
+    } catch (IOException  e) {
     	constructXmlError("Error", e);
     	System.out.println(e.getMessage());
       e.printStackTrace();
