@@ -8,6 +8,8 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.net.InetAddress;
 
+import javax.swing.JOptionPane;
+
 /**
  * 
  */
@@ -39,8 +41,12 @@ public class Client {
 		
 		    while (socket.isConnected())  {
 		    	try{
+		    		
+		    		//userInput = JOptionPane.showInputDialog("Enter client command: ");
+		    	
 		    		if(userInput != null && !in.ready() ) {
 		    			out.println(userInput);
+		    			//We sleep the thread in order not to spam the server with the same linecommand and in order for the time to be able to respond to the command before next command is sent.
 		    			Thread.sleep(4700);
 		    		}
 
@@ -55,12 +61,17 @@ public class Client {
 		    			if (serverResponse.equalsIgnoreCase("exit")) {
 		    				//Thread.sleep(2000);
 			    			socket.close();
+			    			System.out.println("Client closed the socket..");
 			    			System.out.println("Socket to " + client.getHostName() + " Was closed!");
 			    			long endtime = System.currentTimeMillis();
 			    			System.out.println("Final processing time: " + (endtime - startTime));
 			    			break;
 			    			}	
+		    			
+		    			
 		    			}
+		    		
+	    			
 		    		
 		    	} catch(IOException e) {
 		    		System.out.println(e);

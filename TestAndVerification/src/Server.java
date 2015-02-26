@@ -51,24 +51,40 @@ MessageHandler messageDB = new MessageHandler();
   public void run() {
 	  //We add the accepted client to our Arraylist of currently connected clients
 	Server.hostNames.add(clientSocket.getInetAddress().getHostName());
+//	System.out.println(XMLWriter.WriteAcceptConnection("1").toString());
     System.out.println("Accepted Client : ID - " + clientID + " : Address - " + clientSocket.getInetAddress().getHostName()); 
-    final int BUFFER_SIZE = 65536;
-    byte[] buffer = new byte[BUFFER_SIZE];
    
     try {
     	//We start an input and output reader/writers through the sockets
     
     	  BufferedReader   in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
           PrintWriter   out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()), true);
-         
- 
-        
+    
           //While the client is connected it will loop this.
           while (clientSocket.isConnected()) {  	  
         	  //We check so the client command is not empty and that the sent message from the client is ready to be received on the server side.
              if(in.ready() == true) {
                  String clientCommand = in.readLine();
-                 System.out.println("Client Says :" + clientCommand);
+                 System.out.println("Client Says: " + clientCommand);
+                 
+                 if (clientCommand.equalsIgnoreCase("AddMessage")) {
+                	 
+                	 //Just dummy code of how the logic here will be handle
+                	// return out.println(messageDB.Add(recipientID, senderID, message));
+                 }
+                 
+                 if (clientCommand.equalsIgnoreCase("DeleteMessage")) {
+                	// return out.println(messageDB.Delete(recipientID, senderID, message));
+                 }
+                 
+                 if (clientCommand.equalsIgnoreCase("ReplaceMessage")) {
+                	// return out.println(messageDB.Replace(recipientID, senderID, message));
+                 }
+                 
+                 if (clientCommand.equalsIgnoreCase("FetchMessage")) {
+                	// return out.println(messageDB.Fetch(recipientID, senderID, message));
+                 }
+                 
                  
                  //The client wants to exit, we use this command to close the socket on both the server and on the client simultaneously, If not done simultaneously we will receive a socket error due to that the streams are still in use.
                  if (clientCommand.equalsIgnoreCase("exit") || clientSocket.isClosed()) {
@@ -110,12 +126,13 @@ private String constructXmlError(String name, Exception e) {
 }
 
 
-//Helper function removing the connected host in the Array if they lose their connection or signs out
+//Helper function removing the connected host in the Array if they lose their connection or signs out this ensures unique users are connected.
 public void removeHost() {
 	for (int i = 0; i < Server.hostNames.size(); i++){
-		if(Server.hostNames.get(i).equals(clientSocket.getInetAddress().getHostName())){	
+		if(Server.hostNames.get(i).equals(clientSocket.getInetAddress().getHostName())){
+			System.out.println("Connected client removed: " + Server.hostNames.get(i).toString());
 			Server.hostNames.remove(i);
-			  System.out.println("Connected client removed");	
+			 	
 		}
 		else {
 			  System.out.println("No matching clients!");
