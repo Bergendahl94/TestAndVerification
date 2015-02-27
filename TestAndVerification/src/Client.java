@@ -10,6 +10,10 @@ import java.net.InetAddress;
 
 import javax.swing.JOptionPane;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+
 /**
  * 
  */
@@ -19,9 +23,6 @@ import javax.swing.JOptionPane;
  *
  */
 public class Client {
-	
-	
-
 	/**
 	 * @param args
 	 */
@@ -30,6 +31,7 @@ public class Client {
 		String userInput = "Add";
 		InetAddress client = InetAddress.getLocalHost();
 		final int portNumber = 4444;
+		
 		System.out.println("Creating socket to '" + client.getHostName() + "' on port " + portNumber);
 		
 		Socket socket = new Socket(client.getHostName(), portNumber);
@@ -41,25 +43,52 @@ public class Client {
 		
 		    while (socket.isConnected())  {
 		    	try{
-		    		
-		    		//userInput = JOptionPane.showInputDialog("Enter client command: ");
+		    		if(!in.ready()){
+		    		userInput = JOptionPane.showInputDialog("Enter client command: ");
 		    	
-		    		if(userInput != null && !in.ready() ) {
+		    		if(userInput != null && !userInput.isEmpty()) {	
+		    			//Command template for how the client will handle commands
+		    			if(userInput.equalsIgnoreCase("add")) {
+		    				String receiverID = JOptionPane.showInputDialog("Enter receiverID: ");
+		    				String content = JOptionPane.showInputDialog("Enter content: ");
+		    			
+		    				Document f =  XMLWriter.WriteAdd(receiverID, content);
+		    				out.println(f.asXML());
+		    		}
+		    			else if(userInput.equalsIgnoreCase("replace")) {
+		    				String msgID = JOptionPane.showInputDialog("Enter msgID to replace: ");
+		    				String content = JOptionPane.showInputDialog("Enter new content: ");
+		    			
+		    				Document f =  XMLWriter.WriteReplace(msgID, content);
+		    				out.println(f.asXML());
+		    		}
+		    			else if(userInput.equalsIgnoreCase("delete")) {
+		    				String msgID = JOptionPane.showInputDialog("Enter msgID to delete: ");
+		    				
+		    				Document f =  XMLWriter.WriteDelete(msgID);
+		    				out.println(f.asXML());
+		    		}
+		    			else if(userInput.equalsIgnoreCase("fetch")) {
+		    		
+		    		//		Document f =  XMLWriter.WriteFetch(Messages);
+		    		//		out.println(f.asXML());
+		    	
+		    		}
+		    			
+		    			if(userInput.equals("exit") && !in.ready() ) {	
+		    				//We dont close socket here because the socket may then end prematurely before the server can handle the process resulting in error
 		    			out.println(userInput);
+		    			}
 		    			//We sleep the thread in order not to spam the server with the same linecommand and in order for the time to be able to respond to the command before next command is sent.
 		    			Thread.sleep(4700);
 		    		}
-
-		    		if(in.ready()) {
-		    			
+		    		}
+		    		if(in.ready()) {	
 		    			serverResponse = in.readLine();
-		    			System.out.println("Server response: " + serverResponse);	 	
-		    			
-		    			userInput = "exit";
-		    			//socket.close(); 
-	
+		    			System.out.println("Server response: " + serverResponse);	 
+
 		    			if (serverResponse.equalsIgnoreCase("exit")) {
-		    				//Thread.sleep(2000);
+		    				//Socket closes whenever when we can fully assure that the server has processed the command
 			    			socket.close();
 			    			System.out.println("Client closed the socket..");
 			    			System.out.println("Socket to " + client.getHostName() + " Was closed!");
@@ -68,12 +97,8 @@ public class Client {
 			    			break;
 			    			}	
 		    			
-		    			
-		    			}
-		    		
-	    			
-		    		
-		    	} catch(IOException e) {
+		    			}		    		
+		    	} catch(IOException  e) {
 		    		System.out.println(e);
 		    		e.printStackTrace();
 		    		System.exit(-1);
@@ -83,5 +108,4 @@ public class Client {
 		   }
 
 		}
-			
-		}
+	}

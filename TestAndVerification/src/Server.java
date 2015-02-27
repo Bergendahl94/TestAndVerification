@@ -1,11 +1,41 @@
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.dom.DOMSource;
+
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 
 public class Server {
@@ -28,7 +58,6 @@ public class Server {
     		   ClientThread clientThread = new ClientThread(clientSocket, id++);
     		      clientThread.start();
     	}
-    	
    
     	}
 	  }catch (Exception e) {
@@ -50,15 +79,17 @@ MessageHandler messageDB = new MessageHandler();
 
   public void run() {
 	  //We add the accepted client to our Arraylist of currently connected clients
+	  String ID = Integer.toString(clientID);
 	Server.hostNames.add(clientSocket.getInetAddress().getHostName());
-//	System.out.println(XMLWriter.WriteAcceptConnection("1").toString());
-    System.out.println("Accepted Client : ID - " + clientID + " : Address - " + clientSocket.getInetAddress().getHostName()); 
+	System.out.println(XMLWriter.WriteAcceptConnection(ID).asXML());
+   // System.out.println("Accepted Client : ID - " + clientID + " : Address - " + clientSocket.getInetAddress().getHostName()); 
    
     try {
     	//We start an input and output reader/writers through the sockets
     
-    	  BufferedReader   in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+    	  BufferedReader   in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), "UTF-8"));
           PrintWriter   out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()), true);
+          String result = "";
     
           //While the client is connected it will loop this.
           while (clientSocket.isConnected()) {  	  
@@ -66,26 +97,6 @@ MessageHandler messageDB = new MessageHandler();
              if(in.ready() == true) {
                  String clientCommand = in.readLine();
                  System.out.println("Client Says: " + clientCommand);
-                 
-                 if (clientCommand.equalsIgnoreCase("AddMessage")) {
-                	 
-                	 //Just dummy code of how the logic here will be handle
-                	// return out.println(messageDB.Add(recipientID, senderID, message));
-                 }
-                 
-                 if (clientCommand.equalsIgnoreCase("DeleteMessage")) {
-                	// return out.println(messageDB.Delete(recipientID, senderID, message));
-                 }
-                 
-                 if (clientCommand.equalsIgnoreCase("ReplaceMessage")) {
-                	// return out.println(messageDB.Replace(recipientID, senderID, message));
-                 }
-                 
-                 if (clientCommand.equalsIgnoreCase("FetchMessage")) {
-                	// return out.println(messageDB.Fetch(recipientID, senderID, message));
-                 }
-                 
-                 
                  //The client wants to exit, we use this command to close the socket on both the server and on the client simultaneously, If not done simultaneously we will receive a socket error due to that the streams are still in use.
                  if (clientCommand.equalsIgnoreCase("exit") || clientSocket.isClosed()) {
                 	// Thread.sleep(500);
@@ -96,17 +107,57 @@ MessageHandler messageDB = new MessageHandler();
                 	 removeHost();
                 	 clientSocket.close();
                  } 
+                 else{
+                	 //Read the whole messages, we cannot use the built in readline function since it will break the xml messages prematurely resulting in nested exception
+                 StringBuffer sb = new StringBuffer();
+                 while (in.ready()) {
+                     char[] c = new char[] { 1024 };
+                     in.read(c);
+                     sb.append(c); 
+                 }
                  
-                 //We print back same command and flushes the stream to remove lost TCP packages stuck in the stream (JUST NOW FOR TESTING PURPOSES!)
-                 out.println(clientCommand);
+                 result = sb.toString();
+                 System.out.println(result);   
+                 org.dom4j.Document document = DocumentHelper.parseText(result);
+                 document.getDocument().normalize();          
+             	 System.out.println("Root element :" + document.getRootElement().getName());
+             	//  document = XMLWriter.serializeXML(document);
+             	 
+                 if (document.getRootElement().getName().equalsIgnoreCase("Addmessage")) {
+                	 
+                	 System.out.println("ADD SUCCESS!!!!!!!!!");
+                	 
+                	 //DETTA ÄR BARA TEST IGNORERA DETTA!!!!
+                	 org.dom4j.Document f =  XMLWriter.WriteAddResponse("Dummy data");
+                	 result = f.asXML();
+                	// return out.println(messageDB.Add(recipientID, senderID, message));
+                 }
+                 if (document.getRootElement().getName().equalsIgnoreCase("Delete")) {
+                	// return out.println(messageDB.Delete(recipientID, senderID, message));
+                	 System.out.println("DELETE SUCCESS!!!!!!!!!");
+                	 
+                	 org.dom4j.Document f =  XMLWriter.WriteDeleteResponse("Dummy data");
+                	 result = f.asXML();
+                 }
                  
-     
-                 
+                 if (document.getRootElement().getName().equalsIgnoreCase("RplMessage")) {
+                	// return out.println(messageDB.Replace(recipientID, senderID, message));
+                	 System.out.println("REPLACE SUCCESS!!!!!!!!!");
+                	result = "Message has been replaced!";
+                 }
+                 if (document.getRootElement().getName().equalsIgnoreCase("FetchedMessages")) {
+                	// return out.println(messageDB.Fetch(recipientID, senderID, message));
+                	 System.out.println("FETCH SUCCESS!!!!!!!!!");
+                 }
+                 }
+                 //We print back same command this is neccessary in case the user gives the exit command.
+                 out.println(result);
+               }
                             
              }        
-            }
+            
 
-    } catch (IOException  e) {
+    } catch (IOException | DocumentException  e) {
     	constructXmlError("Error", e);
     	System.out.println(e.getMessage());
       e.printStackTrace();
