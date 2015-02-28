@@ -19,14 +19,23 @@ public class P2TestCases {
 	{
 		final Socket mockSocket1 = mockSocket(
 				"5\n"+
-				XMLWriter.WriteAdd("8", "bajskorv").asXML());
+				XMLWriter.WriteAdd("8", "Concilliator").asXML());
 		
 		final Socket mockSocket2 = mockSocket(
+				"9\n"+
+				XMLWriter.WriteAdd("8", "We believe that we invent symbols. The truth is that they invent us; we are their creatures, shaped by their hard, defining edges. When soldiers take their oath they are given a coin, an asimi stamped with the profile of the Autarch. Their acceptance of that coin is their acceptance of the special duties and burdens of military life-they are soldiers from that moment, though they may know nothing of the management of arms. I did not know that then, but it is a profound mistake to believe that we must know of such things to be influenced by them, and in fact to believe so is to believe in the most debased and superstitious kind of magic. The would-be sorcerer alone has faith in the efficacy of pure knowledge; rational people know that things act of themselves or not at all.").asXML());
+		
+		final Socket mockSocket3 = mockSocket(
+				"10\n"+
+				XMLWriter.WriteAdd("17", "").asXML());
+		
+		final Socket mockSocket4 = mockSocket(
 				"8\n"+
-				XMLWriter.WriteAdd("12", "PoopIdoop").asXML());
+				XMLWriter.WriteFetch().asXML());
+
 		
 		ServerSocket serverSocket = mock(ServerSocket.class);
-		when(serverSocket.accept()).thenReturn(mockSocket1).thenReturn(mockSocket2);
+		when(serverSocket.accept()).thenReturn(mockSocket1).thenReturn(mockSocket2).thenReturn(mockSocket3).thenReturn(mockSocket4);
 
 
 		//Run Server in a new thread
@@ -53,58 +62,42 @@ public class P2TestCases {
 		Thread.sleep(5000);
 
 		
-		ByteArrayInputStream array = new ByteArrayInputStream(((ByteArrayOutputStream)mockSocket1.getOutputStream()).toByteArray());
-		
-		ByteArrayInputStream array2 = new ByteArrayInputStream(((ByteArrayOutputStream)mockSocket2.getOutputStream()).toByteArray());
-		
-		BufferedReader in = new BufferedReader(new InputStreamReader(array, "UTF-8"));
-		
-		BufferedReader in2 = new BufferedReader(new InputStreamReader(array2, "UTF-8"));
-		
 
-		
-
-	
-         
-       
-       
-    
         
-       //Discard the XML header
-		in.readLine();
-		in2.readLine();
-        
-        assertEquals("<MessageAdded>bajskorv</MessageAdded>", in.readLine());
-        assertEquals("<MessageAdded>PoopIdoop</MessageAdded>", in2.readLine());
-		
-		
+        assertEquals("<MessageAdded>Concilliator</MessageAdded>", getMessage(mockSocket1.getOutputStream()));
+        assertEquals("<MessageAdded>We believe that we invent symbols. The truth is that they invent us; we are their creatures, shaped by their hard, defining edges. When soldiers take their oath they are given a coin, an asimi stamped with the profile of the Autarch. Their acceptance of that coin is their acceptance of the special duties and burdens of military life-they are soldiers from that moment, though they may know nothing of the management of arms. I did not know that then, but it is a profound mistake to believe that we must know of such things to be influenced by them, and in fact to believe so is to believe in the most debased and superstitious kind of magic. The would-be sorcerer alone has faith in the efficacy of pure knowledge; rational people know that things act of themselves or not at all.</MessageAdded>", getMessage(mockSocket2.getOutputStream()));
+        assertEquals("<MessageAdded></MessageAdded>", getMessage(mockSocket3.getOutputStream()));
+        assertEquals("<FetchedMessages><Message><Sender>8</Sender><Content>Concilliator</Content></Message><Message><Sender>8</Sender><Content>We believe that we invent symbols. The truth is that they invent us; we are their creatures, shaped by their hard, defining edges. When soldiers take their oath they are given a coin, an asimi stamped with the profile of the Autarch. Their acceptance of that coin is their acceptance of the special duties and burdens of military life-they are soldiers from that moment, though they may know nothing of the management of arms. I did not know that then, but it is a profound mistake to believe that we must know of such things to be influenced by them, and in fact to believe so is to believe in the most debased and superstitious kind of magic. The would-be sorcerer alone has faith in the efficacy of pure knowledge; rational people know that things act of themselves or not at all.</Content></Message></FetchedMessages>", getMessage(mockSocket4.getOutputStream()));
 		
 		
 	}
 	
+	
+	private String getMessage(OutputStream stream) throws Exception
+	{
+		ByteArrayInputStream array = new ByteArrayInputStream(((ByteArrayOutputStream)stream).toByteArray());
+		BufferedReader in = new BufferedReader(new InputStreamReader(array, "UTF-8"));
+		
+		in.readLine();
+		
+		
+		return in.readLine();
+	}
+	
+	
+
+	
 	public Socket mockSocket(String content) throws Exception 
 	{
-		
-
-		
 		//Create the streams of the server
 		ByteArrayInputStream inStream = new ByteArrayInputStream((content).getBytes());
 		
 		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-
-
-		
-		
-	
-		
 		
 		Socket socket = mock(Socket.class);
 		when(socket.isConnected()).thenReturn(true).thenReturn(true).thenReturn(true).thenReturn(false);
 		when(socket.getInputStream()).thenReturn(inStream);
 		when(socket.getOutputStream()).thenReturn(outStream);
-		
-		
-
 		
 		return socket;
 	}

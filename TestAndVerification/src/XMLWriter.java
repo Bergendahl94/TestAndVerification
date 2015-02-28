@@ -33,10 +33,12 @@ public class XMLWriter {
 		messages.add(new SentMessage("554","30"));
 		messages.add(new SentMessage("56","30"));
 		
-		System.out.println(WriteFetch(messages).asXML());
+		System.out.println(WriteFetchResponse(messages).asXML());
 		
 		System.out.println(WriteFetchComplete().asXML());
 		System.out.println(WriteFetchCompleteResponse().asXML());
+		System.out.println(WriteFetch().asXML());
+		System.out.println("gdfgdfg");
 	}
 	
 	public static Document WriteRequestConnection(String ID)
@@ -130,7 +132,18 @@ public class XMLWriter {
 	        return document;
 	}
 	
-	public static Document WriteFetch(ArrayList<SentMessage> Messages)
+	public static Document WriteFetch()
+	{
+		Document document = DocumentHelper.createDocument();
+		
+        Element contentElement = document.addElement("FetchMessages");   
+        
+        
+        
+        return document;
+	}
+	
+	public static Document WriteFetchResponse(ArrayList<SentMessage> Messages)
 	{
 		Document document = DocumentHelper.createDocument();
 		
@@ -138,8 +151,9 @@ public class XMLWriter {
         
         for (SentMessage sentMessage : Messages) {
         	Element MessageRoot = contentElement.addElement("Message");
-			contentElement.addElement("Sender").addText(sentMessage.sender);
-			contentElement.addElement("Content").addText(sentMessage.content);
+			MessageRoot.addElement("Sender").addText(sentMessage.sender);
+			MessageRoot.addElement("Content").addText(sentMessage.content);
+			
 		}
         
         return document;

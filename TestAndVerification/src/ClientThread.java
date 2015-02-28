@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.dom4j.DocumentException;
@@ -13,7 +14,7 @@ import org.dom4j.Element;
 
 class ClientThread extends Thread  {
 String result = "";
-MessageHandler messageDB = new MessageHandler();
+static MessageHandler messageDB = new MessageHandler();
 org.dom4j.Document document;
   Socket clientSocket;
   int clientID = -1;
@@ -81,7 +82,8 @@ org.dom4j.Document document;
                 	replace();
                  }
                  //FETCH LOGIC
-                 if (document.getRootElement().getName().equalsIgnoreCase("FetchedMessages")) {
+                 if (document.getRootElement().getName().equalsIgnoreCase("FetchMessages")) {
+                	 fetch(Integer.toString(clientID));
                 	// return out.println(messageDB.Fetch(recipientID, senderID, message));
                 	 System.out.println("FETCH SUCCESS!!!!!!!!!");	 
                  }
@@ -183,8 +185,32 @@ private void replace() {
 	 result = document.asXML();
 }
 
-private void fetch() {
+private void fetch(String recipientID) throws DocumentException {
+	 
 	
+	Element root = DocumentHelper.parseText(messageDB.Fetch(recipientID)).getRootElement();
+	
+	String test = root.asXML();
+	
+	 String messageID = root.getText();       
+	 
+	 ArrayList<SentMessage> list = new ArrayList<SentMessage>();
+	 
+	// iterate through child elements of root with element name "foo"
+     for ( Iterator i = root.elementIterator( "Message" ); i.hasNext(); ) {
+         Element ele = (Element) i.next();
+    	 ArrayList<Element> list2 = (ArrayList<Element>)ele.elements();
+         
+    	 list.add(new SentMessage(list2.get(0).getText(), list2.get(1).getText()));
+    	 
+
+     }
+	 
+	 result = XMLWriter.WriteFetchResponse(list).asXML();
+
+	 
+	        	 
+
 }
 
 }
