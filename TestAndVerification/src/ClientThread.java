@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -17,10 +18,14 @@ org.dom4j.Document document;
   Socket clientSocket;
   int clientID = -1;
   boolean running = true;
+  BufferedReader in;
+  OutputStream   out;
 
-  ClientThread(Socket s, int i) {
+  ClientThread(Socket s, int i, BufferedReader in, OutputStream   out) {
     clientSocket = s;
     clientID = i;
+    this.in = in;
+    this.out = out;
   }
 
   public void run() {
@@ -31,19 +36,19 @@ org.dom4j.Document document;
 
     try {
     	//We start an input and output reader/writers through the sockets
-    	  BufferedReader   in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), "UTF-8"));
-          PrintWriter   out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()), true);
+    
           //While the client is connected it will loop this.
           while (clientSocket.isConnected()) {  	  
         	  //We check so the client command is not empty and that the sent message from the client is ready to be received on the server side.
              if(in.ready() == true) {
+                 String Header = in.readLine();
                  String clientCommand = in.readLine();
                  System.out.println("Client Says: " + clientCommand);
                  //The client wants to exit, we use this command to close the socket on both the server and on the client simultaneously, If not done simultaneously we will receive a socket error due to that the streams are still in use.
                  if (clientCommand.equalsIgnoreCase("exit") || clientSocket.isClosed()) {
                 	 //We remove the connected client from our array so he can reconnect at a later moment if he wishes too & that his unique identifier is not in use.
-                	 out.println("Client closed the connection");
-                	 out.println(clientCommand);
+                	 //out.println("Client closed the connection");
+                	 out.write(clientCommand.getBytes());
                 	
                 	 removeHost();
                 	 clientSocket.close();
@@ -57,9 +62,10 @@ org.dom4j.Document document;
                      sb.append(c); 
                  }
                  
-                 	result = sb.toString();
+
                  	System.out.println(result);   
-                 	document = DocumentHelper.parseText(result);
+                 	document = DocumentHelper.parseText(Header+"\n"+clientCommand);
+                 	System.out.println("XML: " + document.asXML()); 
                  	document.getDocument().normalize();          
 
                  //ADD LOGIC
@@ -81,7 +87,7 @@ org.dom4j.Document document;
                  }
                  }
                  //We print back same command this is neccessary in case the user gives the exit command.
-                 out.println(result);
+                 out.write(result.getBytes());
                }                  
              }        
     } catch (IOException | DocumentException  e) {
@@ -136,7 +142,7 @@ private void add() {
 	 int messageID = messageDB.Add(recipientID, ID, message);
 	 System.out.println("MessageID" + messageID);
 	 String msgID = Integer.toString(messageID);
-	 document =  XMLWriter.WriteAddResponse(msgID);
+	 document =  XMLWriter.WriteAddResponse(message);
 	 result = document.asXML();
 }
 
