@@ -6,18 +6,16 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class Server {
-
+	protected int port = 4444;
 	protected static ArrayList<Integer> hostNames = new ArrayList<Integer>();
 	ServerSocket server;
-  public void startServer() throws Exception {
-	  try {
-		  int port = 4444;
+  public Server() throws Exception {
+	  try { 
 		  int id = 0;
 		  createSocket(port);
    
     while (true) {
     	System.out.println("listening for connections..");
-    	
     	Socket clientSocket = server.accept();
    	     BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), "UTF-8"));
    	     id = Integer.parseInt(in.readLine());
@@ -25,14 +23,10 @@ public class Server {
     		System.out.println("Client already connected!");
     		
     	} else {
-    	
-    		   ClientThread clientThread = new ClientThread(clientSocket, id);
-    		      clientThread.start();
-    		      
+    		   	ClientThread clientThread = new ClientThread(clientSocket, id);
+    		    clientThread.start();   
     		 }
     	}
-   
-   
 	  } catch (Exception e) {
     		System.out.println(e);
     	}

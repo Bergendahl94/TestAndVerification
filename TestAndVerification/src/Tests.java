@@ -1,5 +1,7 @@
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
+import java.net.ServerSocket;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -175,12 +177,6 @@ public class Tests {
 	}
 	
 	
-	public void ServerTests() throws Exception {
-		Server serv = new Server();
-	
-			serv.startServer();
-		
-		
-	}
+
 
 }	
