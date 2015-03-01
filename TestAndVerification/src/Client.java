@@ -24,8 +24,7 @@ import org.dom4j.DocumentHelper;
  */
 public class Client {
 
-	public static void startClient(String receiverNum) throws IOException, InterruptedException, SocketException, UnknownHostException {
-		String ID = receiverNum;
+	public static void startClient() throws IOException, InterruptedException, SocketException, UnknownHostException {
 		String serverResponse = "";
 		String userInput = "Add";
 		InetAddress client = InetAddress.getLocalHost();
@@ -54,6 +53,7 @@ public class Client {
 		    			
 		    				Document f =  XMLWriter.WriteAdd(receiverID, content);
 		    				out.println(f.asXML());
+		    				
 		    		}
 		    			else if(userInput.equalsIgnoreCase("replace")) {
 		    				String msgID = JOptionPane.showInputDialog("Enter msgID to replace: ");
@@ -85,7 +85,8 @@ public class Client {
 		    		}
 		    		if(in.ready()) {	
 		    			serverResponse = in.readLine();
-		    			System.out.println("Server response: " + serverResponse);	 
+		    			System.out.println("Server response: " + serverResponse);	
+		    			
 
 		    			if (serverResponse.equalsIgnoreCase("exit")) {
 		    				//Socket closes whenever when we can fully assure that the server has processed the command

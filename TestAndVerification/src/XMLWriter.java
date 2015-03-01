@@ -76,7 +76,16 @@ public class XMLWriter {
 	{
 		Document document = DocumentHelper.createDocument();
         
-        Element contentElement = document.addElement("Message added:").addText(msgID);
+        Element contentElement = document.addElement("MessageAdded").addText(msgID);
+        
+        return document;
+	}
+	
+	public static Document WriteReplaceResponse(String msgID)
+	{
+		Document document = DocumentHelper.createDocument();
+        
+        Element contentElement = document.addElement("Message replaced:").addText(msgID);
         
         return document;
 	}
@@ -120,7 +129,6 @@ public class XMLWriter {
 
 	        return document;
 	}
-	
 	
 	public static Document WriteFetch(ArrayList<SentMessage> Messages)
 	{

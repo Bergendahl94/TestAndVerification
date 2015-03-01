@@ -174,5 +174,13 @@ public class Tests {
 		assertEquals(fetchComplete, -1); // Test passes, fetch haven't been completed
 	}
 	
+	
+	public void ServerTests() throws Exception {
+		Server serv = new Server();
+	
+			serv.startServer();
+		
+		
+	}
 
 }	
