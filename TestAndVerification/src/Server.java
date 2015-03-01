@@ -28,7 +28,7 @@ public class Server {
    	   	    id = Integer.parseInt(in.readLine());
    	    	if(hostNames.contains(id)) {
    	    		System.out.println("Client already connected!");
-   	    		
+   	    		out.write(XMLWriter.WriteError("Client already connected!").asXML().getBytes());
    	    	} 
    	    	else {
    	    		
@@ -43,6 +43,7 @@ public class Server {
     
 	  } catch (Exception e) {
    	    		System.out.println(e);
+   	    		
 	}
 }
 

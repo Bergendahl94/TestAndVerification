@@ -33,7 +33,12 @@ org.dom4j.Document document;
 	  //We add the accepted client to our Arraylist of currently connected clients
 	  String ID = Integer.toString(clientID);
 	  Server.hostNames.add(clientID);
-	  System.out.println(XMLWriter.WriteAcceptConnection(ID).asXML());
+	  try {
+		out.write((XMLWriter.WriteAcceptConnection(ID).asXML() + "\n" ).getBytes());
+	} catch (IOException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	}
 
     try {
     	//We start an input and output reader/writers through the sockets
@@ -42,7 +47,8 @@ org.dom4j.Document document;
           while (clientSocket.isConnected()) {  	  
         	  //We check so the client command is not empty and that the sent message from the client is ready to be received on the server side.
              if(in.ready() == true) {
-                 String Header = in.readLine();
+              
+            	 String Header = in.readLine();
                  String clientCommand = in.readLine();
                  System.out.println("Client Says: " + clientCommand);
                  //The client wants to exit, we use this command to close the socket on both the server and on the client simultaneously, If not done simultaneously we will receive a socket error due to that the streams are still in use.
@@ -92,10 +98,15 @@ org.dom4j.Document document;
                  out.write(result.getBytes());
                }                  
              }        
-    } catch (IOException | DocumentException  e) {
-    	constructXmlError("Error", e);
-    	System.out.println(e.getMessage());
-      e.printStackTrace();
+    } catch (IOException | DocumentException | NullPointerException  e) {
+    	try {
+			out.write(XMLWriter.WriteError(e.toString()).asXML().getBytes());
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+    	System.out.println(e.getMessage()+ "gdsågäkasåpogspågodkspgds<påägnmåädsg");
+      //e.printStackTrace();
       removeHost();
     } 
   } 
