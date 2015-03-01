@@ -15,7 +15,7 @@ public class P2TestCases {
 	
 	private static String responseContent = "test";
 	@Test
-	public void TestAddClient() throws Exception 
+	public void TestAdd() throws Exception 
 	{
 		final Socket mockSocket1 = mockSocket(
 				"5\n"+
@@ -67,10 +67,79 @@ public class P2TestCases {
         assertEquals("<MessageAdded>Concilliator</MessageAdded>", getMessage(mockSocket1.getOutputStream()));
         assertEquals("<MessageAdded>We believe that we invent symbols. The truth is that they invent us; we are their creatures, shaped by their hard, defining edges. When soldiers take their oath they are given a coin, an asimi stamped with the profile of the Autarch. Their acceptance of that coin is their acceptance of the special duties and burdens of military life-they are soldiers from that moment, though they may know nothing of the management of arms. I did not know that then, but it is a profound mistake to believe that we must know of such things to be influenced by them, and in fact to believe so is to believe in the most debased and superstitious kind of magic. The would-be sorcerer alone has faith in the efficacy of pure knowledge; rational people know that things act of themselves or not at all.</MessageAdded>", getMessage(mockSocket2.getOutputStream()));
         assertEquals("<MessageAdded></MessageAdded>", getMessage(mockSocket3.getOutputStream()));
-        assertEquals("<FetchedMessages><Message><Sender>8</Sender><Content>Concilliator</Content></Message><Message><Sender>8</Sender><Content>We believe that we invent symbols. The truth is that they invent us; we are their creatures, shaped by their hard, defining edges. When soldiers take their oath they are given a coin, an asimi stamped with the profile of the Autarch. Their acceptance of that coin is their acceptance of the special duties and burdens of military life-they are soldiers from that moment, though they may know nothing of the management of arms. I did not know that then, but it is a profound mistake to believe that we must know of such things to be influenced by them, and in fact to believe so is to believe in the most debased and superstitious kind of magic. The would-be sorcerer alone has faith in the efficacy of pure knowledge; rational people know that things act of themselves or not at all.</Content></Message></FetchedMessages>", getMessage(mockSocket4.getOutputStream()));
+        assertEquals("<FetchedMessages><Message><Sender>5</Sender><Content>Concilliator</Content></Message><Message><Sender>9</Sender><Content>We believe that we invent symbols. The truth is that they invent us; we are their creatures, shaped by their hard, defining edges. When soldiers take their oath they are given a coin, an asimi stamped with the profile of the Autarch. Their acceptance of that coin is their acceptance of the special duties and burdens of military life-they are soldiers from that moment, though they may know nothing of the management of arms. I did not know that then, but it is a profound mistake to believe that we must know of such things to be influenced by them, and in fact to believe so is to believe in the most debased and superstitious kind of magic. The would-be sorcerer alone has faith in the efficacy of pure knowledge; rational people know that things act of themselves or not at all.</Content></Message></FetchedMessages>", getMessage(mockSocket4.getOutputStream()));
 		
 		
 	}
+	
+	
+	@Test
+	public void TestFetch() throws Exception 
+	{
+		final Socket mockSocket1 = mockSocket(
+				"32\n"+
+				XMLWriter.WriteAdd("42", "Concilliator").asXML());
+		
+		final Socket mockSocket2 = mockSocket(
+				"90\n"+
+				XMLWriter.WriteAdd("42", "We believe that we invent symbols. The truth is that they invent us; we are their creatures, shaped by their hard, defining edges. When soldiers take their oath they are given a coin, an asimi stamped with the profile of the Autarch. Their acceptance of that coin is their acceptance of the special duties and burdens of military life-they are soldiers from that moment, though they may know nothing of the management of arms. I did not know that then, but it is a profound mistake to believe that we must know of such things to be influenced by them, and in fact to believe so is to believe in the most debased and superstitious kind of magic. The would-be sorcerer alone has faith in the efficacy of pure knowledge; rational people know that things act of themselves or not at all.").asXML());
+		
+		final Socket mockSocket3 = mockSocket(
+				"1111\n"+
+				XMLWriter.WriteAdd("170", "for id 17").asXML());
+		
+		final Socket mockSocket4 = mockSocket(
+				"42\n"+
+				XMLWriter.WriteFetch().asXML());
+
+		final Socket mockSocket5 = mockSocket(
+				"170\n"+
+				XMLWriter.WriteFetch().asXML());
+
+		final Socket mockSocket6 = mockSocket(
+				"18\n"+
+				XMLWriter.WriteFetch().asXML());
+		
+		
+		ServerSocket serverSocket = mock(ServerSocket.class);
+		when(serverSocket.accept()).thenReturn(mockSocket1).thenReturn(mockSocket2).thenReturn(mockSocket3).thenReturn(mockSocket4).thenReturn(mockSocket5).thenReturn(mockSocket6);
+
+
+		//Run Server in a new thread
+		new Thread()
+		{
+		    public void run() {
+				try {
+					Server server = new Server()
+					{
+					    @Override
+					    public void createSocket(int port) throws IOException {
+					        server = serverSocket;
+					    }
+					};
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    }
+		}.start();
+		
+		
+		Thread.sleep(6000);
+
+       //Wait for server to process input
+
+
+		
+
+        
+        assertEquals("<FetchedMessages><Message><Sender>32</Sender><Content>Concilliator</Content></Message><Message><Sender>90</Sender><Content>We believe that we invent symbols. The truth is that they invent us; we are their creatures, shaped by their hard, defining edges. When soldiers take their oath they are given a coin, an asimi stamped with the profile of the Autarch. Their acceptance of that coin is their acceptance of the special duties and burdens of military life-they are soldiers from that moment, though they may know nothing of the management of arms. I did not know that then, but it is a profound mistake to believe that we must know of such things to be influenced by them, and in fact to believe so is to believe in the most debased and superstitious kind of magic. The would-be sorcerer alone has faith in the efficacy of pure knowledge; rational people know that things act of themselves or not at all.</Content></Message></FetchedMessages>", getMessage(mockSocket4.getOutputStream()));
+        assertEquals("<FetchedMessages><Message><Sender>1111</Sender><Content>for id 17</Content></Message></FetchedMessages>", getMessage(mockSocket5.getOutputStream()));
+        assertEquals("<FetchedMessages/>", getMessage(mockSocket6.getOutputStream()));
+		
+        
+	}
+	
 	
 	
 	private String getMessage(OutputStream stream) throws Exception

@@ -201,7 +201,7 @@ private void fetch(String recipientID) throws DocumentException {
          Element ele = (Element) i.next();
     	 ArrayList<Element> list2 = (ArrayList<Element>)ele.elements();
          
-    	 list.add(new SentMessage(list2.get(0).getText(), list2.get(1).getText()));
+    	 list.add(new SentMessage(list2.get(0).getText(), list2.get(2).getText()));
     	 
 
      }
