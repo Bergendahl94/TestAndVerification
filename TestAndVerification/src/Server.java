@@ -45,26 +45,34 @@ import org.xml.sax.SAXException;
 
 public class Server {
 
-	protected static ArrayList<String> hostNames = new ArrayList<String>();
+	protected static ArrayList<Integer> hostNames = new ArrayList<Integer>();
 	
   public void startServer() throws Exception {
 	  try {
 	ServerSocket server = new ServerSocket(4444);
+	
     int id = 0;
    
     while (true) {
     	System.out.println("listening for connections..");
     	
     	Socket clientSocket = server.accept();
-    	if(hostNames.contains(clientSocket.getInetAddress().getHostName())) {
+   	     BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), "UTF-8"));
+   	     id = Integer.parseInt(in.readLine());
+    	if(hostNames.contains(id)) {
     		System.out.println("Client already connected!");
     		
     	} else {
-    		   ClientThread clientThread = new ClientThread(clientSocket, id++);
+    	
+    		
+    			
+    		   ClientThread clientThread = new ClientThread(clientSocket, id);
     		      clientThread.start();
+    		      
+    		 }
     	}
    
-    	}
+    	
 	  }catch (Exception e) {
     		System.out.println(e);
     	}
@@ -86,7 +94,7 @@ MessageHandler messageDB = new MessageHandler();
   public void run() {
 	  //We add the accepted client to our Arraylist of currently connected clients
 	  String ID = Integer.toString(clientID);
-	Server.hostNames.add(clientSocket.getInetAddress().getHostName());
+	Server.hostNames.add(clientID);
 	System.out.println(XMLWriter.WriteAcceptConnection(ID).asXML());
    // System.out.println("Accepted Client : ID - " + clientID + " : Address - " + clientSocket.getInetAddress().getHostName()); 
    
@@ -227,7 +235,7 @@ private String constructXmlError(String name, Exception e) {
 //Helper function removing the connected host in the Array if they lose their connection or signs out this ensures unique users are connected.
 public void removeHost() {
 	for (int i = 0; i < Server.hostNames.size(); i++){
-		if(Server.hostNames.get(i).equals(clientSocket.getInetAddress().getHostName())){
+		if(Server.hostNames.get(i).equals(clientID)){
 			System.out.println("Connected client removed: " + Server.hostNames.get(i).toString());
 			Server.hostNames.remove(i);
 			 	

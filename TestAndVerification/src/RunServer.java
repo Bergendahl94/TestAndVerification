@@ -9,13 +9,18 @@ public class RunServer {
 		// TODO Auto-generated method stub
 
 			Server serv = new Server();
+			Client cli = new Client();
 			try {
 				serv.startServer();
-				Client.startClient();
+				cli.startClient("12345");
+				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			
+			
 	}
 
 }

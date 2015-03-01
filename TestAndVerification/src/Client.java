@@ -24,18 +24,19 @@ import org.dom4j.DocumentHelper;
  */
 public class Client {
 
-	public static void startClient() throws IOException, InterruptedException, SocketException, UnknownHostException {
+	public void startClient(String senderNum) throws IOException, InterruptedException, SocketException, UnknownHostException {
+		String sender = senderNum;
 		String serverResponse = "";
 		String userInput = "Add";
 		InetAddress client = InetAddress.getLocalHost();
 		final int portNumber = 4444;
 		
-		System.out.println("Creating socket to '" + client.getHostName() + "' on port " + portNumber);
+		System.out.println("Creating socket to '" + senderNum + "' on port " + portNumber);
 		
 		Socket socket = new Socket(client.getHostName(), portNumber);
 		PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 		BufferedReader in = new BufferedReader(  new InputStreamReader(socket.getInputStream()));
-	
+		out.println(sender);
 		
 	
 		long startTime = System.currentTimeMillis();
