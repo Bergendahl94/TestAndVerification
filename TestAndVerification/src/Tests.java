@@ -174,10 +174,5 @@ public class Tests {
 		assertEquals(fetchComplete, -1); // Test passes, fetch haven't been completed
 	}
 	
-	@Test
-	public void serverTests() {
-		
-		
-		
-	}
+
 }	

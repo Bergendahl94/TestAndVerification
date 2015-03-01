@@ -42,7 +42,7 @@ public class Server {
 
 	protected static ArrayList<String> hostNames = new ArrayList<String>();
 	
-  public static void main(String[] args) throws Exception {
+  public static void startServer() throws Exception {
 	  try {
     ServerSocket server = new ServerSocket(4444);
     int id = 0;
@@ -121,7 +121,7 @@ MessageHandler messageDB = new MessageHandler();
                  org.dom4j.Document document = DocumentHelper.parseText(result);
                  document.getDocument().normalize();          
              	 System.out.println("Root element :" + document.getRootElement().getName());
-             	//  document = XMLWriter.serializeXML(document);
+        
              	 
                  if (document.getRootElement().getName().equalsIgnoreCase("Addmessage")) {
                 	 

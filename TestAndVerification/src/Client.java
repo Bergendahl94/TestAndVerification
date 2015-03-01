@@ -23,10 +23,9 @@ import org.dom4j.DocumentHelper;
  *
  */
 public class Client {
-	/**
-	 * @param args
-	 */
-	public static void main(String args[]) throws IOException, InterruptedException, SocketException, UnknownHostException {
+
+	public static void startClient(String receiverNum) throws IOException, InterruptedException, SocketException, UnknownHostException {
+		String ID = receiverNum;
 		String serverResponse = "";
 		String userInput = "Add";
 		InetAddress client = InetAddress.getLocalHost();
@@ -37,6 +36,7 @@ public class Client {
 		Socket socket = new Socket(client.getHostName(), portNumber);
 		PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 		BufferedReader in = new BufferedReader(  new InputStreamReader(socket.getInputStream()));
+	
 		
 	
 		long startTime = System.currentTimeMillis();
