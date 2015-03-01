@@ -10,7 +10,6 @@ import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
-
 class ClientThread extends Thread  {
 String result = "";
 MessageHandler messageDB = new MessageHandler();
@@ -30,7 +29,6 @@ org.dom4j.Document document;
 	Server.hostNames.add(clientID);
 	System.out.println(XMLWriter.WriteAcceptConnection(ID).asXML());
    // System.out.println("Accepted Client : ID - " + clientID + " : Address - " + clientSocket.getInetAddress().getHostName()); 
-   
     try {
     	//We start an input and output reader/writers through the sockets
     	  BufferedReader   in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), "UTF-8"));

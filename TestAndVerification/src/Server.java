@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -7,13 +8,12 @@ import java.util.ArrayList;
 public class Server {
 
 	protected static ArrayList<Integer> hostNames = new ArrayList<Integer>();
-	
+	ServerSocket server;
   public void startServer() throws Exception {
 	  try {
 		  int port = 4444;
-	ServerSocket server = new ServerSocket(port);
-	
-    int id = 0;
+		  int id = 0;
+		  createSocket(port);
    
     while (true) {
     	System.out.println("listening for connections..");
@@ -32,11 +32,16 @@ public class Server {
     		 }
     	}
    
-    	
+   
 	  } catch (Exception e) {
     		System.out.println(e);
     	}
     }
+  
+  public void createSocket(int port) throws IOException {
+	 server = new ServerSocket(port);
+    }
+  
   }
 
 
