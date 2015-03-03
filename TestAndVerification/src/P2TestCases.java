@@ -269,45 +269,7 @@ public class P2TestCases {
 
 	}
 	
-	@Test
-	public void TestExit() throws Exception 
-	{
-		final Socket mockSocket1 = mockSocket(
-				"5510\n"+
-				XMLWriter.WriteExit().asXML());
-		
-		
-		ServerSocket serverSocket = mock(ServerSocket.class);
-		when(serverSocket.accept()).thenReturn(mockSocket1);
-
-
-		//Run Server in a new thread
-		new Thread()
-		{
-		    public void run() {
-				try {
-					Server server = new Server()
-					{
-					    @Override
-					    public void createSocket(int port) throws IOException {
-					        server = serverSocket;
-					    }
-					};
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		    }
-		}.start();
-		
-
-       //Wait for server to process input
-		Thread.sleep(5000);
-
-        assertEquals("<ExitComplete/>", getMessage(mockSocket1.getOutputStream(), true));
-  
-
-	}
+	
 	
 	@Test
 	public void TestError() throws Exception 
@@ -827,6 +789,92 @@ public void TestErrorScenario() throws Exception {
 	
 }
 
+//Scenario 8
+@Test
+public void TestExit() throws Exception 
+{
+	final Socket mockSocket1 = mockSocket(
+			"5510\n"+
+			XMLWriter.WriteExit().asXML());
+	
+	final Socket mockSocket2 = mockSocket(
+			"5510\n"+
+			XMLWriter.WriteExit().asXML());
+	
+	
+	ServerSocket serverSocket = mock(ServerSocket.class);
+	when(serverSocket.accept()).thenReturn(mockSocket1).thenReturn(mockSocket2);
+
+
+	//Run Server in a new thread
+	new Thread()
+	{
+	    public void run() {
+			try {
+				Server server = new Server()
+				{
+				    @Override
+				    public void createSocket(int port) throws IOException {
+				        server = serverSocket;
+				    }
+				};
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    }
+	}.start();
+	
+
+   //Wait for server to process input
+	Thread.sleep(5000);
+
+    assertEquals("<ExitComplete/>", getMessage(mockSocket1.getOutputStream(), true));
+    assertEquals("<ExitComplete/>", getMessage(mockSocket2.getOutputStream(), true));
+
+
+}
+
+//Scenario 10
+@Test
+public void TestWrongXmlRoot() throws Exception 
+{
+	final Socket mockSocket1 = mockSocket(
+			"55998\n"+
+			XMLWriter.WriteWrongRoot().asXML());
+	
+	
+	ServerSocket serverSocket = mock(ServerSocket.class);
+	when(serverSocket.accept()).thenReturn(mockSocket1);
+
+
+	//Run Server in a new thread
+	new Thread()
+	{
+	    public void run() {
+			try {
+				Server server = new Server()
+				{
+				    @Override
+				    public void createSocket(int port) throws IOException {
+				        server = serverSocket;
+				    }
+				};
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    }
+	}.start();
+	
+
+   //Wait for server to process input
+	Thread.sleep(5000);
+
+    assertEquals("<ErrorMsg>Wrong xml root!</ErrorMsg>", getMessage(mockSocket1.getOutputStream(), true));
+
+
+}
 
 
 

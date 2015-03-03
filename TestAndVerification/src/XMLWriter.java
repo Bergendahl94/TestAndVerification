@@ -74,6 +74,15 @@ public class XMLWriter {
 		        return document;
 	}
 	
+	public static Document WriteWrongRoot()
+	{
+		Document document = DocumentHelper.createDocument();
+        
+        Element contentElement = document.addElement("blablabla");
+        
+        return document;
+	}
+	
 	public static Document WriteAddResponse(String msgID)
 	{
 		Document document = DocumentHelper.createDocument();

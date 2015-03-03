@@ -69,12 +69,12 @@ org.dom4j.Document document;
                      sb.append(c); 
                  }
                  
-
+                 
                  	System.out.println(result);   
                  	document = DocumentHelper.parseText(Header+"\n"+clientCommand);
                  	System.out.println("XML: " + document.asXML()); 
                  	document.getDocument().normalize();          
-
+                
                  //ADD LOGIC
                  if (document.getRootElement().getName().equalsIgnoreCase("Exit")) {
                 	 //We remove the connected client from our array so he can reconnect at a later moment if he wishes too & that his unique identifier is not in use.
@@ -85,24 +85,30 @@ org.dom4j.Document document;
                 	 clientSocket.close();
                  }
                  
-                 if (document.getRootElement().getName().equalsIgnoreCase("Addmessage")) {
+                 else if (document.getRootElement().getName().equalsIgnoreCase("Addmessage")) {
                 	 add();
                  }
                  //DELETE LOGIC
-                 if (document.getRootElement().getName().equalsIgnoreCase("Delete")) {
+                 else if (document.getRootElement().getName().equalsIgnoreCase("Delete")) {
                 	delete();
                  }
                  //REPLACE LOGIC
-                 if (document.getRootElement().getName().equalsIgnoreCase("RplMessage")) {
+                 else if (document.getRootElement().getName().equalsIgnoreCase("RplMessage")) {
                 	replace();
                  }
                  //FETCH LOGIC
-                 if (document.getRootElement().getName().equalsIgnoreCase("FetchMessages")) {
+                 else if (document.getRootElement().getName().equalsIgnoreCase("FetchMessages")) {
                 	 fetch(Integer.toString(clientID));
                 	// return out.println(messageDB.Fetch(recipientID, senderID, message));
                 	 System.out.println("FETCH SUCCESS!!!!!!!!!");	 
+                 } else {
+                	 result = XMLWriter.WriteError("Wrong xml root!").asXML();
                  }
-                 }
+                 
+                 
+                 	
+                 } 
+                 
                  //We print back same command this is neccessary in case the user gives the exit command.
                  out.write(result.getBytes());
                }                  
