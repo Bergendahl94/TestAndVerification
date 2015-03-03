@@ -692,19 +692,19 @@ public void TestPRequestReplace() throws Exception {
 
 	final Socket mockSocket2 = mockSocket(
 			"556456767\n"+
-			XMLWriter.WriteReplace("8", "Fire it up!").asXML());
+			XMLWriter.WriteReplace("9", "Fire it up!").asXML());
 	
 	
 	final Socket mockSocket3 = mockSocket(
 			"556564567\n"+
-			XMLWriter.WriteReplace("8", "Fire it up!").asXML());
+			XMLWriter.WriteReplace("9", "Fire it up!").asXML());
 	
 	
 	final Socket mockSocket4 = mockSocket(
 			"1000009\n"+
 			XMLWriter.WriteFetch().asXML());
 
-	assertEquals("556564567\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<RplMessage><MsgId>8</MsgId><Content>Fire it up!</Content></RplMessage>", readString(mockSocket3.getInputStream()));
+	assertEquals("556564567\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<RplMessage><MsgId>9</MsgId><Content>Fire it up!</Content></RplMessage>", readString(mockSocket3.getInputStream()));
 
 
 
@@ -735,16 +735,10 @@ public void TestPRequestReplace() throws Exception {
 	//Wait for server to process input
 	Thread.sleep(5000);
 
-	assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" 
-	+ "\n<Accepted connection from>556456767</Accepted connection from>"
-	+ "\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-	+ "\n<MessageReplaced>8</MessageReplaced>", readOutputStream(mockSocket2.getOutputStream()));
+	assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Accepted connection from>556456767</Accepted connection from>\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<MessageReplaced>9</MessageReplaced>", readOutputStream(mockSocket2.getOutputStream()));
 	
 	
-	assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" 
-	+ "\n<Accepted connection from>1000009</Accepted connection from>"
-	+ "\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-	+ "\n<FetchedMessages><Message><Sender>55675456</Sender><Content>Fire it up!</Content></Message></FetchedMessages>", readOutputStream(mockSocket4.getOutputStream()));
+	assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Accepted connection from>1000009</Accepted connection from>\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<FetchedMessages><Message><Sender>55675456</Sender><Content>Fire it up!</Content></Message></FetchedMessages>", readOutputStream(mockSocket4.getOutputStream()));
 }
 
 
