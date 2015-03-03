@@ -270,6 +270,46 @@ public class P2TestCases {
 	}
 	
 	@Test
+	public void TestExit() throws Exception 
+	{
+		final Socket mockSocket1 = mockSocket(
+				"5510\n"+
+				XMLWriter.WriteExit().asXML());
+		
+		
+		ServerSocket serverSocket = mock(ServerSocket.class);
+		when(serverSocket.accept()).thenReturn(mockSocket1);
+
+
+		//Run Server in a new thread
+		new Thread()
+		{
+		    public void run() {
+				try {
+					Server server = new Server()
+					{
+					    @Override
+					    public void createSocket(int port) throws IOException {
+					        server = serverSocket;
+					    }
+					};
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    }
+		}.start();
+		
+
+       //Wait for server to process input
+		Thread.sleep(5000);
+
+        assertEquals("<ExitComplete/>", getMessage(mockSocket1.getOutputStream(), true));
+  
+
+	}
+	
+	@Test
 	public void TestError() throws Exception 
 	{
 		final Socket mockSocket1 = mockSocket(

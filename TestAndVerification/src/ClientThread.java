@@ -76,6 +76,15 @@ org.dom4j.Document document;
                  	document.getDocument().normalize();          
 
                  //ADD LOGIC
+                 if (document.getRootElement().getName().equalsIgnoreCase("Exit")) {
+                	 //We remove the connected client from our array so he can reconnect at a later moment if he wishes too & that his unique identifier is not in use.
+                	 //out.println("Client closed the connection");
+                	 out.write(XMLWriter.WriteExitComplete().asXML().getBytes());
+                	
+                	 removeHost();
+                	 clientSocket.close();
+                 }
+                 
                  if (document.getRootElement().getName().equalsIgnoreCase("Addmessage")) {
                 	 add();
                  }

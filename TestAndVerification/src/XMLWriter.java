@@ -159,6 +159,24 @@ public class XMLWriter {
         return document;
 	}
 	
+	public static Document WriteExit()
+	{
+		Document document = DocumentHelper.createDocument();
+        
+        Element contentElement = document.addElement("Exit");
+        
+        return document;
+	}
+	
+	public static Document WriteExitComplete()
+	{
+		Document document = DocumentHelper.createDocument();
+        
+        Element contentElement = document.addElement("ExitComplete");
+        
+        return document;
+	}
+	
 	public static Document WriteFetchComplete()
 	{
 		Document document = DocumentHelper.createDocument();
