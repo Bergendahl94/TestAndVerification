@@ -566,4 +566,260 @@ public class P2TestCases {
         assertEquals("<Accepted connection from>500</Accepted connection from>", getMessageAccepted(mockSocket1.getOutputStream()));
 
 	}
+
+
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+//Scenarios	
+
+//Scenario 1 and 2
+@Test
+public void RequestAcceptConnection() throws Exception {
+	final Socket mockSocket1 = mockSocket(
+			"556456\n"+
+			XMLWriter.WriteAdd("100000", "My goose is getting cooked!").asXML());
+
+	final Socket mockSocket2 = mockSocket(
+			"5564567\n"+
+			XMLWriter.WriteAdd("1060000", "My goose is getting cooked!").asXML());
+
+	assertEquals("556456\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<AddMessage><Receiver>100000</Receiver><Content>My goose is getting cooked!</Content></AddMessage>", readString(mockSocket1.getInputStream()));
+
+
+
+
+
+	ServerSocket serverSocket = mock(ServerSocket.class);
+	when(serverSocket.accept()).thenReturn(mockSocket1).thenReturn(mockSocket2);
+	//Run Server in a new thread
+	new Thread()
+	{
+		public void run() {
+			try {
+				Server server = new Server()
+				{
+					@Override
+					public void createSocket(int port) throws IOException {
+						server = serverSocket;
+					}
+				};
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}.start();
+
+
+	//Wait for server to process input
+	Thread.sleep(5000);
+
+	assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" 
+	+ "\n<Accepted connection from>5564567</Accepted connection from>"
+	+ "\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+	+ "\n<MessageAdded>My goose is getting cooked!</MessageAdded>", readOutputStream(mockSocket2.getOutputStream()));
+}
+
+
+//Scenario 3 and 4 and 5
+@Test
+public void RequestDeleteAndAddMessage() throws Exception 
+{
+	final Socket mockSocket1 = mockSocket(
+			"7789\n"+
+			XMLWriter.WriteAdd("98", "hej").asXML()
+			+ "\nexit");
+	
+	final Socket mockSocket2 = mockSocket(
+			"26786783\n" +
+			XMLWriter.WriteDelete("6900000").asXML());
+	
+	
+	
+
+	
+	final Socket mockSocket4 = mockSocket(
+			"26786783\n" +
+			XMLWriter.WriteDelete("5").asXML());
+	
+	assertEquals("26786783\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Delete>5</Delete>", readString(mockSocket4.getInputStream()));
+
+	
+	ServerSocket serverSocket = mock(ServerSocket.class);
+	when(serverSocket.accept()).thenReturn(mockSocket1).thenReturn(mockSocket2);
+
+
+	//Run Server in a new thread
+	new Thread()
+	{
+	    public void run() {
+			try {
+				Server server = new Server()
+				{
+				    @Override
+				    public void createSocket(int port) throws IOException {
+				        server = serverSocket;
+				    }
+				};
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    }
+	}.start();
+	
+
+   //Wait for server to process input
+	Thread.sleep(5000);
+
+	
+
+    
+    assertEquals("<MessageAdded>hej</MessageAdded>", getMessage(mockSocket1.getOutputStream(),true));
+    assertEquals("<MessageDeleted>-1</MessageDeleted>", getMessage(mockSocket2.getOutputStream(),true));
+	
+
+}
+
+
+
+//Scenario 6
+@Test
+public void TestPRequestReplace() throws Exception {
+	final Socket mockSocket1 = mockSocket(
+			"55675456\n"+
+			XMLWriter.WriteAdd("1000009", "My goose is getting cooked!").asXML());
+
+	final Socket mockSocket2 = mockSocket(
+			"556456767\n"+
+			XMLWriter.WriteReplace("8", "Fire it up!").asXML());
+	
+	
+	final Socket mockSocket3 = mockSocket(
+			"556564567\n"+
+			XMLWriter.WriteReplace("8", "Fire it up!").asXML());
+	
+	
+	final Socket mockSocket4 = mockSocket(
+			"1000009\n"+
+			XMLWriter.WriteFetch().asXML());
+
+	assertEquals("556564567\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<RplMessage><MsgId>8</MsgId><Content>Fire it up!</Content></RplMessage>", readString(mockSocket3.getInputStream()));
+
+
+
+
+
+	ServerSocket serverSocket = mock(ServerSocket.class);
+	when(serverSocket.accept()).thenReturn(mockSocket1).thenReturn(mockSocket2).thenReturn(mockSocket4);
+	//Run Server in a new thread
+	new Thread()
+	{
+		public void run() {
+			try {
+				Server server = new Server()
+				{
+					@Override
+					public void createSocket(int port) throws IOException {
+						server = serverSocket;
+					}
+				};
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}.start();
+
+
+	//Wait for server to process input
+	Thread.sleep(5000);
+
+	assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" 
+	+ "\n<Accepted connection from>556456767</Accepted connection from>"
+	+ "\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+	+ "\n<MessageReplaced>8</MessageReplaced>", readOutputStream(mockSocket2.getOutputStream()));
+	
+	
+	assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" 
+	+ "\n<Accepted connection from>1000009</Accepted connection from>"
+	+ "\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+	+ "\n<FetchedMessages><Message><Sender>55675456</Sender><Content>Fire it up!</Content></Message></FetchedMessages>", readOutputStream(mockSocket4.getOutputStream()));
+}
+
+
+
+//Scenario 7
+@Test
+public void TestErrorScenario() throws Exception {
+	final Socket mockSocket1 = mockSocket(
+			"55675456\n"+
+			XMLWriter.WriteAdd("1000009", "My goose is getting cooked!"));
+
+
+
+
+
+
+	ServerSocket serverSocket = mock(ServerSocket.class);
+	when(serverSocket.accept()).thenReturn(mockSocket1);
+	//Run Server in a new thread
+	new Thread()
+	{
+		public void run() {
+			try {
+				Server server = new Server()
+				{
+					@Override
+					public void createSocket(int port) throws IOException {
+						server = serverSocket;
+					}
+				};
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}.start();
+
+
+	//Wait for server to process input
+	Thread.sleep(5000);
+
+	assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" 
+	+ "\n<Accepted connection from>55675456</Accepted connection from>"
+	+ "\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+	+ "\n<ErrorMsg>java.lang.NullPointerException</ErrorMsg>", readOutputStream(mockSocket1.getOutputStream()));
+	
+}
+
+
+
+
+
+private String readOutputStream(OutputStream stream) throws IOException{
+
+	ByteArrayInputStream array = new ByteArrayInputStream(((ByteArrayOutputStream)stream).toByteArray());
+	BufferedReader in = new BufferedReader(new InputStreamReader(array, "UTF-8"));
+
+
+	return readString(array);
+
+}
+
+
+
+
+static String readString(InputStream is) throws IOException {
+		char[] buf = new char[2048];
+		Reader r = new InputStreamReader(is, "UTF-8");
+		StringBuilder s = new StringBuilder();
+		while (true) {
+			int n = r.read(buf);
+			if (n < 0)
+				break;
+			s.append(buf, 0, n);
+		}
+		return s.toString();
+	}
 }
