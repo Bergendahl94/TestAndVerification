@@ -87,7 +87,7 @@ public class XMLWriter {
 	{
 		Document document = DocumentHelper.createDocument();
         
-        Element contentElement = document.addElement("Message replaced:").addText(msgID);
+        Element contentElement = document.addElement("MessageReplaced").addText(msgID);
         
         return document;
 	}
@@ -114,7 +114,7 @@ public class XMLWriter {
 	{
 		Document document = DocumentHelper.createDocument();
         
-        Element contentElement = document.addElement("Message deleted:").addText(msgID);
+        Element contentElement = document.addElement("MessageDeleted").addText(msgID);
         
         return document;
 	}

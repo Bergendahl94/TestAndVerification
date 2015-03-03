@@ -68,6 +68,100 @@ public class P2TestCases {
 		
 	}
 	
+	
+	
+	
+	@Test
+	public void TestDel() throws Exception 
+	{
+		final Socket mockSocket1 = mockSocket(
+				"70\n"+
+				XMLWriter.WriteAdd("98", "hej").asXML());
+		
+		final Socket mockSocket2 = mockSocket(
+				"23\n" +
+				XMLWriter.WriteDelete("5").asXML());
+		
+
+		
+		ServerSocket serverSocket = mock(ServerSocket.class);
+		when(serverSocket.accept()).thenReturn(mockSocket1).thenReturn(mockSocket2);
+
+
+		//Run Server in a new thread
+		new Thread()
+		{
+		    public void run() {
+				try {
+					Server server = new Server()
+					{
+					    @Override
+					    public void createSocket(int port) throws IOException {
+					        server = serverSocket;
+					    }
+					};
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    }
+		}.start();
+		
+
+       //Wait for server to process input
+		Thread.sleep(5000);
+
+		
+
+        
+        assertEquals("<MessageAdded>hej</MessageAdded>", getMessage(mockSocket1.getOutputStream(),true));
+        assertEquals("<MessageDeleted>5</MessageDeleted>", getMessage(mockSocket2.getOutputStream(),true));
+		
+
+	}
+	
+	@Test
+	public void TestRep() throws Exception 
+	{
+		final Socket mockSocket1 = mockSocket(
+				"560\n"+
+				XMLWriter.WriteAdd("88", "Wille").asXML());
+		
+		final Socket mockSocket2 = mockSocket(
+				"445\n"+
+				XMLWriter.WriteReplace("6", "William").asXML());
+		
+		ServerSocket serverSocket = mock(ServerSocket.class);
+		when(serverSocket.accept()).thenReturn(mockSocket1).thenReturn(mockSocket2);
+
+		//Run Server in a new thread
+		new Thread()
+		{
+		    public void run() {
+				try {
+					Server server = new Server()
+					{
+					    @Override
+					    public void createSocket(int port) throws IOException {
+					        server = serverSocket;
+					    }
+					};
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    }
+		}.start();
+
+       //Wait for server to process input
+		Thread.sleep(5000);
+        
+        assertEquals("<MessageAdded>Wille</MessageAdded>", getMessage(mockSocket1.getOutputStream(),true));
+        assertEquals("<MessageReplaced>6</MessageReplaced>", getMessage(mockSocket2.getOutputStream(),true));
+		
+	}
+	
+	
 	@Test
 	public void TestFetch() throws Exception 
 	{
@@ -304,7 +398,7 @@ public class P2TestCases {
 	}
 	
 	
-	}
+	
 	
 	public String[] RunMultiThreadedSends(String[] input)
 	{
