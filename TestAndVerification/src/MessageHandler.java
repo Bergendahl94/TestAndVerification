@@ -133,7 +133,7 @@ public class MessageHandler {
 	//Code implementation for our replace function
 	public int Replace(int messageID, String message) {
 		//We check so the message input is not empty 
-		if (message.isEmpty()) {
+		if (message.isEmpty() || message == null) {
 			//if message is empty return -1 = error
 			return -1;
 		}
