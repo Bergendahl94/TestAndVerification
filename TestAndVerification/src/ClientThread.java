@@ -170,7 +170,7 @@ private void add() {
 	 int messageID = messageDB.Add(recipientID, ID, message);
 	 System.out.println("MessageID" + messageID);
 	 String msgID = Integer.toString(messageID);
-	 document =  XMLWriter.WriteAddResponse(message);
+	 document =  XMLWriter.WriteAddResponse(Integer.toString(messageID));
 	 result = document.asXML();
 }
 

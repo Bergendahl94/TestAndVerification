@@ -61,9 +61,9 @@ public class P2TestCases {
 		Thread.sleep(5000);
 
         
-        assertEquals("<MessageAdded>Concilliator</MessageAdded>", getMessage(mockSocket1.getOutputStream(),true));
-        assertEquals("<MessageAdded>We believe that we invent symbols. The truth is that they invent us; we are their creatures, shaped by their hard, defining edges. When soldiers take their oath they are given a coin, an asimi stamped with the profile of the Autarch. Their acceptance of that coin is their acceptance of the special duties and burdens of military life-they are soldiers from that moment, though they may know nothing of the management of arms. I did not know that then, but it is a profound mistake to believe that we must know of such things to be influenced by them, and in fact to believe so is to believe in the most debased and superstitious kind of magic. The would-be sorcerer alone has faith in the efficacy of pure knowledge; rational people know that things act of themselves or not at all.</MessageAdded>", getMessage(mockSocket2.getOutputStream(),true));
-        assertEquals("<MessageAdded></MessageAdded>", getMessage(mockSocket3.getOutputStream(),true));
+        assertEquals("<MessageAdded>4</MessageAdded>", getMessage(mockSocket1.getOutputStream(),true));
+        assertEquals("<MessageAdded>5</MessageAdded>", getMessage(mockSocket2.getOutputStream(),true));
+        assertEquals("<MessageAdded>6</MessageAdded>", getMessage(mockSocket3.getOutputStream(),true));
         assertEquals("<FetchedMessages><Message><Sender>5</Sender><Content>Concilliator</Content></Message><Message><Sender>9</Sender><Content>We believe that we invent symbols. The truth is that they invent us; we are their creatures, shaped by their hard, defining edges. When soldiers take their oath they are given a coin, an asimi stamped with the profile of the Autarch. Their acceptance of that coin is their acceptance of the special duties and burdens of military life-they are soldiers from that moment, though they may know nothing of the management of arms. I did not know that then, but it is a profound mistake to believe that we must know of such things to be influenced by them, and in fact to believe so is to believe in the most debased and superstitious kind of magic. The would-be sorcerer alone has faith in the efficacy of pure knowledge; rational people know that things act of themselves or not at all.</Content></Message></FetchedMessages>", getMessage(mockSocket4.getOutputStream(),true));
 		
 	}
@@ -114,7 +114,7 @@ public class P2TestCases {
 		
 
         
-        assertEquals("<MessageAdded>hej</MessageAdded>", getMessage(mockSocket1.getOutputStream(),true));
+        assertEquals("<MessageAdded>7</MessageAdded>", getMessage(mockSocket1.getOutputStream(),true));
         assertEquals("<MessageDeleted>5</MessageDeleted>", getMessage(mockSocket2.getOutputStream(),true));
 		
 
@@ -156,7 +156,7 @@ public class P2TestCases {
        //Wait for server to process input
 		Thread.sleep(5000);
         
-        assertEquals("<MessageAdded>Wille</MessageAdded>", getMessage(mockSocket1.getOutputStream(),true));
+        assertEquals("<MessageAdded>8</MessageAdded>", getMessage(mockSocket1.getOutputStream(),true));
         assertEquals("<MessageReplaced>6</MessageReplaced>", getMessage(mockSocket2.getOutputStream(),true));
 		
 	}
@@ -619,7 +619,7 @@ public void RequestAcceptConnection() throws Exception {
 	assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" 
 	+ "\n<Accepted connection from>5564567</Accepted connection from>"
 	+ "\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-	+ "\n<MessageAdded>My goose is getting cooked!</MessageAdded>", readOutputStream(mockSocket2.getOutputStream()));
+	+ "\n<MessageAdded>3</MessageAdded>", readOutputStream(mockSocket2.getOutputStream()));
 }
 
 
@@ -677,7 +677,7 @@ public void RequestDeleteAndAddMessage() throws Exception
 	
 
     
-    assertEquals("<MessageAdded>hej</MessageAdded>", getMessage(mockSocket1.getOutputStream(),true));
+    assertEquals("<MessageAdded>2</MessageAdded>", getMessage(mockSocket1.getOutputStream(),true));
     assertEquals("<MessageDeleted>-1</MessageDeleted>", getMessage(mockSocket2.getOutputStream(),true));
 	
 
