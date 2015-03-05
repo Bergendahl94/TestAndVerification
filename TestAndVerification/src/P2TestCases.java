@@ -13,6 +13,15 @@ public class P2TestCases {
 
 	
 	private static String responseContent = "test";
+	
+	
+	
+	/*
+	    Interface: “<AddMessage><Receiver>50</Receiver><Content>Bajskorv</Content></AddMessage>”
+		Description: Send the xml data for adding messages. Compares the response from the server with the expected output
+		Pre-condition: The user ids are not already connected to the server
+		Post-condition:  Message/Messages have been added to the server and given unique ID's.
+	 */
 	@Test
 	public void TestAdd() throws Exception 
 	{
@@ -68,9 +77,12 @@ public class P2TestCases {
 		
 	}
 	
-	
-	
-	
+	/*
+	Interface: “<Delete>5</Delete>”
+	Description: Send the xml data for deleting a message. Compares the response from the server with the expected output
+	Pre-condition: The user ids are not already connected to the server 
+	Post-condition:  Message/Messages have been added to the server and then been deleted.
+	*/
 	@Test
 	public void TestDel() throws Exception 
 	{
@@ -120,6 +132,12 @@ public class P2TestCases {
 
 	}
 	
+	/*
+	 Interface: “<RplMessage><MsgId>5</MsgId><Content>content</Content></RplMessage>”
+	 Description: Send the xml data to replaces a message and compares the response from the server with the expected output
+	 Pre-condition: The user ids are not already connected to the server 
+	 Post-condition:  Message/Messages have been added to the server and then been replaced with a new message.
+	*/
 	@Test
 	public void TestRep() throws Exception 
 	{
@@ -161,7 +179,12 @@ public class P2TestCases {
 		
 	}
 	
-	
+	/*
+	Interface: “<FetchMessages/>”
+	Description: Send the xml data to fetch a message and compares the response from the server with the expected output
+	Pre-condition: The user ids are not already connected to the server 
+	Post-condition:  Message/Messages have been added to the server and then been replaced with a new message.
+	 */
 	@Test
 	public void TestFetch() throws Exception 
 	{
@@ -224,6 +247,13 @@ public class P2TestCases {
         
 	}
 	
+	
+	/*
+	Interface: Any valid xml
+	Description: Attemps to connect to the server and tests the servers response with the expected response
+	Pre-condition: The user ids are not already connected to the server 
+	Post-condition:  A connection with the server has been established
+	 */
 	@Test
 	public void TestAcceptConnection() throws Exception 
 	{
@@ -270,7 +300,12 @@ public class P2TestCases {
 	}
 	
 	
-	
+	/*
+	Interface:  Any invalid xml
+	Description: Attemps to send the server XML with an invalid syntax to force it to respond with an error, it tests this error response with the expected error message
+	Pre-condition: The user ids are not already connected to the server 
+	Post-condition:  The server has dealt with an error and sent out an appropriate response
+	 */
 	@Test
 	public void TestError() throws Exception 
 	{

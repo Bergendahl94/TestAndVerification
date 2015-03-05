@@ -24,6 +24,7 @@ public class XMLWriter {
 		System.out.println(WriteError("Write").asXML());
 		System.out.println(WriteAcceptConnection("Write").asXML());
 		System.out.println(WriteRequestConnection("Write").asXML());
+		System.out.println(WriteReplace("5","content").asXML());
 		System.out.println(WriteDelete("Write").asXML());
 		System.out.println(WriteDeleteResponse("Bajskorv").asXML());
 		
