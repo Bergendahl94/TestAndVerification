@@ -17,7 +17,7 @@ public class P2TestCases {
 	
 	
 	/*
-	    Interface: “<AddMessage><Receiver>50</Receiver><Content>Bajskorv</Content></AddMessage>”
+	    Interface: “<AddMessage><Receiver>50</Receiver><Content>korv</Content></AddMessage>”
 		Description: Send the xml data for adding messages. Compares the response from the server with the expected output
 		Pre-condition: The user ids are not already connected to the server
 		Post-condition:  Message/Messages have been added to the server and given unique ID's.
